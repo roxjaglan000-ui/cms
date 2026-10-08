@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Street Light CMS</title>
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="login" class="login hidden">
+    <form id="loginForm" class="card">
+      <h1>Street Light CMS</h1>
+      <p class="muted">Central Monitoring System</p>
+      <label>Username <input name="username" autocomplete="username" required></label>
+      <label>Password <input name="password" type="password" autocomplete="current-password" required></label>
+      <button type="submit">Login</button>
+      <p id="loginError" class="error"></p>
+    </form>
+  </div>
+
+  <div id="app" class="hidden">
+    <header class="topbar">
+      <div class="brand">Street Light CMS</div>
+      <nav>
+        <a href="#/">Dashboard</a>
+        <a href="#/alarms">Alarms <span id="alarmBadge" class="badge hidden"></span></a>
+        <a href="#/events">Event log</a>
+        <a href="#/users" data-role="admin">Users</a>
+      </nav>
+      <div class="who"><span id="whoami"></span> <button id="logout" class="link">Logout</button></div>
+    </header>
+    <main id="view"></main>
+  </div>
+
+  <script src="vendor/leaflet/leaflet.js"></script>
+  <script src="vendor/chart.js/chart.umd.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
