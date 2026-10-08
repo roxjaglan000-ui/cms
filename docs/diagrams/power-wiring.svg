@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="340" viewBox="0 0 1000 340" role="img" aria-label="Power wiring diagram"><style>
+rect.bg{fill:#f8f9f6}
+text{font-family:"JetBrains Mono",Consolas,monospace;font-size:12px;fill:#1d2321}
+.t-small{font-size:10.5px;fill:#5b6461}
+.t-head{font-family:"Arial Narrow",Arial,sans-serif;font-size:15px;font-weight:600;fill:#1d2321}
+.box{fill:#eceeea;stroke:#1d2321;stroke-width:1.4}
+.box-acc{fill:#eceeea;stroke:#2f5d50;stroke-width:2}
+.w{fill:none;stroke:#1d2321;stroke-width:2}
+.w-thin{fill:none;stroke:#1d2321;stroke-width:1.4}
+.sig{fill:none;stroke:#2f5d50;stroke-width:1.6;stroke-dasharray:5 4}
+.r{stroke:#c62828}.y{stroke:#b88a00}.b{stroke:#1f5fbf}.n{stroke:#1d2321}.pe{stroke:#2e7d32}
+.dot{fill:#1d2321}
+</style><rect class="bg" width="1000" height="340"/>
+    <text x="14" y="74">R</text><text x="14" y="104">Y</text><text x="14" y="134">B</text><text x="14" y="164">N</text>
+    <!-- main conductors -->
+    <path class="w r" d="M32 70H700"/><path class="w y" d="M32 100H700"/><path class="w b" d="M32 130H700"/><path class="w n" d="M32 160H700"/>
+    <!-- busbar thick -->
+    <path class="w r" style="stroke-width:8px" d="M420 70H530"/><path class="w y" style="stroke-width:8px" d="M420 100H530"/><path class="w b" style="stroke-width:8px" d="M420 130H530"/><path class="w n" style="stroke-width:8px" d="M420 160H530"/>
+    <text x="475" y="44" text-anchor="middle" class="t-head">Al Busbar</text>
+    <!-- incomer -->
+    <rect class="box" x="90" y="52" width="70" height="126" rx="3" fill-opacity=".85"/>
+    <text x="125" y="36" text-anchor="middle" class="t-head">Incomer</text>
+    <text x="125" y="118" text-anchor="middle" class="t-small">4P</text><text x="125" y="132" text-anchor="middle" class="t-small">MCCB</text><text x="125" y="146" text-anchor="middle" class="t-small">40A</text>
+    <!-- SPD -->
+    <path class="w-thin r" d="M195 70V220"/><path class="w-thin y" d="M205 100V220"/><path class="w-thin b" d="M215 130V220"/><path class="w-thin n" d="M225 160V220"/>
+    <circle class="dot" cx="195" cy="70" r="3"/><circle class="dot" cx="205" cy="100" r="3"/><circle class="dot" cx="215" cy="130" r="3"/><circle class="dot" cx="225" cy="160" r="3"/>
+    <rect class="box" x="180" y="220" width="60" height="36" rx="3"/><text x="210" y="243" text-anchor="middle" class="t-small">SPD T2</text>
+    <path class="w pe" d="M210 256V300"/>
+    <!-- meter -->
+    <rect class="box" x="290" y="52" width="90" height="126" rx="3"/>
+    <text x="335" y="36" text-anchor="middle" class="t-head">Energy Meter</text>
+    <text x="335" y="112" text-anchor="middle" class="t-small">SDM630</text><text x="335" y="126" text-anchor="middle" class="t-small">direct 100A</text>
+    <path class="sig" d="M335 178V232H300"/><text x="252" y="282" class="t-small">RS485 A/B → controller</text>
+    <path class="sig" d="M300 232V270"/>
+    <!-- control tap -->
+    <path class="w-thin r" d="M500 70V220"/><path class="w-thin n" d="M515 160V220"/>
+    <circle class="dot" cx="500" cy="70" r="3"/><circle class="dot" cx="515" cy="160" r="3"/>
+    <rect class="box" x="470" y="220" width="80" height="36" rx="3"/><text x="510" y="243" text-anchor="middle" class="t-small">MCB 6A ×2</text>
+    <text x="440" y="282" class="t-small">L + N → SMPS &amp; coil circuit (drawing 03)</text>
+    <!-- contactor -->
+    <rect class="box" x="570" y="52" width="80" height="126" rx="3"/>
+    <text x="610" y="36" text-anchor="middle" class="t-head">Contactor K1</text>
+    <text x="610" y="112" text-anchor="middle" class="t-small">4P 40A</text><text x="610" y="126" text-anchor="middle" class="t-small">coil 230V</text>
+    <path class="sig" d="M610 178V210"/><text x="575" y="224" class="t-small">A1/A2 ← control</text>
+    <!-- outgoing MCBs -->
+    <rect class="box" x="700" y="60" width="44" height="20" rx="2"/><rect class="box" x="700" y="90" width="44" height="20" rx="2"/><rect class="box" x="700" y="120" width="44" height="20" rx="2"/>
+    <text x="722" y="74" text-anchor="middle" class="t-small">20A</text><text x="722" y="104" text-anchor="middle" class="t-small">20A</text><text x="722" y="134" text-anchor="middle" class="t-small">20A</text>
+    <text x="722" y="40" text-anchor="middle" class="t-head">SP MCB</text>
+    <path class="w r" d="M744 70H880"/><path class="w y" d="M744 100H880"/><path class="w b" d="M744 130H880"/>
+    <rect class="box" x="700" y="150" width="44" height="20" rx="2"/><text x="722" y="164" text-anchor="middle" class="t-small">N</text>
+    <path class="w n" d="M744 160H880"/>
+    <!-- sense taps -->
+    <circle class="dot" cx="770" cy="70" r="3"/><circle class="dot" cx="790" cy="100" r="3"/><circle class="dot" cx="810" cy="130" r="3"/>
+    <path class="sig" d="M770 70V200M790 100V200M810 130V200"/>
+    <text x="760" y="218" class="t-small">230V opto sense → GPIO 39/13/14</text>
+    <!-- feeder labels -->
+    <text x="886" y="74">Feeder-1</text><text x="886" y="104">Feeder-2</text><text x="886" y="134">Feeder-3</text><text x="886" y="164">N to poles</text>
+    <!-- earth bar -->
+    <path class="w pe" d="M60 300H960" style="stroke-width:4px"/>
+    <text x="64" y="322" class="t-small">PE earth bar: panel body, door, SPD, pole earth, 2 nos earth pit</text>
+  </svg>
