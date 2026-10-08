@@ -21,7 +21,8 @@
 
 - Controller: LilyGO T-A7670E (ESP32 + 4G LTE Cat-1)
 - Energy meter: Selec MFM383A-C with 3 CTs (RS485)
-- Panel cost: about ₹23,000–29,000 for the tender build, excluding poles and lights ([bom.md](docs/bom.md))
+- Two 3-phase outgoing feeders (one per road direction) with 6 MCBs and a 300 mA RCCB, sized for 250 poles per panel
+- Panel cost: about ₹25,500–32,500 for the 10 kW tender build, excluding poles and lights ([bom.md](docs/bom.md))
 - Switching: 4P 40 A contactor with an AUTO / OFF / MANUAL selector, so the lights still work if the controller fails
 - CMS: ThingsBoard over MQTT
 

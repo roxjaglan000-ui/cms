@@ -13,7 +13,7 @@ text{font-family:"JetBrains Mono",Consolas,monospace;font-size:12px;fill:#1d2321
 </style><rect class="bg" width="1000" height="340"/>
     <text x="14" y="74">R</text><text x="14" y="104">Y</text><text x="14" y="134">B</text><text x="14" y="164">N</text>
     <!-- main conductors -->
-    <path class="w r" d="M32 70H700"/><path class="w y" d="M32 100H700"/><path class="w b" d="M32 130H700"/><path class="w n" d="M32 160H700"/>
+    <path class="w r" d="M32 70H668"/><path class="w y" d="M32 100H668"/><path class="w b" d="M32 130H668"/><path class="w n" d="M32 160H668"/>
     <!-- busbar thick -->
     <path class="w r" style="stroke-width:8px" d="M420 70H530"/><path class="w y" style="stroke-width:8px" d="M420 100H530"/><path class="w b" style="stroke-width:8px" d="M420 130H530"/><path class="w n" style="stroke-width:8px" d="M420 160H530"/>
     <text x="475" y="44" text-anchor="middle" class="t-head">Al Busbar</text>
@@ -42,19 +42,24 @@ text{font-family:"JetBrains Mono",Consolas,monospace;font-size:12px;fill:#1d2321
     <text x="610" y="36" text-anchor="middle" class="t-head">Contactor K1</text>
     <text x="610" y="112" text-anchor="middle" class="t-small">4P 40A</text><text x="610" y="126" text-anchor="middle" class="t-small">coil 230V</text>
     <path class="sig" d="M610 178V210"/><text x="575" y="224" class="t-small">A1/A2 ← control</text>
-    <!-- outgoing MCBs -->
-    <rect class="box" x="700" y="60" width="44" height="20" rx="2"/><rect class="box" x="700" y="90" width="44" height="20" rx="2"/><rect class="box" x="700" y="120" width="44" height="20" rx="2"/>
-    <text x="722" y="74" text-anchor="middle" class="t-small">20A</text><text x="722" y="104" text-anchor="middle" class="t-small">20A</text><text x="722" y="134" text-anchor="middle" class="t-small">20A</text>
-    <text x="722" y="40" text-anchor="middle" class="t-head">SP MCB</text>
-    <path class="w r" d="M744 70H880"/><path class="w y" d="M744 100H880"/><path class="w b" d="M744 130H880"/>
-    <rect class="box" x="700" y="150" width="44" height="20" rx="2"/><text x="722" y="164" text-anchor="middle" class="t-small">N</text>
-    <path class="w n" d="M744 160H880"/>
-    <!-- sense taps -->
-    <circle class="dot" cx="770" cy="70" r="3"/><circle class="dot" cx="790" cy="100" r="3"/><circle class="dot" cx="810" cy="130" r="3"/>
-    <path class="sig" d="M770 70V200M790 100V200M810 130V200"/>
-    <text x="760" y="218" class="t-small">230V opto sense → GPIO 39/13/14</text>
-    <!-- feeder labels -->
-    <text x="886" y="74">Feeder-1</text><text x="886" y="104">Feeder-2</text><text x="886" y="134">Feeder-3</text><text x="886" y="164">N to poles</text>
+    <!-- RCCB -->
+    <rect class="box" x="668" y="52" width="44" height="126" rx="3"/>
+    <text x="690" y="36" text-anchor="middle" class="t-head">RCCB</text>
+    <text x="690" y="112" text-anchor="middle" class="t-small">4P 40A</text><text x="690" y="126" text-anchor="middle" class="t-small">300mA</text>
+    <!-- feeder A -->
+    <path class="w r" d="M712 70H900"/><path class="w y" d="M712 100H900"/><path class="w b" d="M712 130H900"/><path class="w n" d="M712 160H900"/>
+    <text x="790" y="40" text-anchor="middle" class="t-head">Feeder A</text>
+    <rect class="box" x="772" y="62" width="36" height="16" rx="2"/><rect class="box" x="772" y="92" width="36" height="16" rx="2"/><rect class="box" x="772" y="122" width="36" height="16" rx="2"/>
+    <text x="790" y="74" text-anchor="middle" class="t-small">16A</text><text x="790" y="104" text-anchor="middle" class="t-small">16A</text><text x="790" y="134" text-anchor="middle" class="t-small">16A</text>
+    <text x="906" y="104">Road A</text><text x="906" y="120" class="t-small">4-core</text>
+    <!-- feeder B -->
+    <path class="w-thin r" d="M730 70V218H900"/><path class="w-thin y" d="M738 100V234H900"/><path class="w-thin b" d="M746 130V250H900"/><path class="w-thin n" d="M754 160V266H900"/>
+    <circle class="dot" cx="730" cy="70" r="3"/><circle class="dot" cx="738" cy="100" r="3"/><circle class="dot" cx="746" cy="130" r="3"/><circle class="dot" cx="754" cy="160" r="3"/>
+    <text x="790" y="204" text-anchor="middle" class="t-head">Feeder B</text>
+    <rect class="box" x="772" y="211" width="36" height="14" rx="2"/><rect class="box" x="772" y="227" width="36" height="14" rx="2"/><rect class="box" x="772" y="243" width="36" height="14" rx="2"/>
+    <text x="790" y="222" text-anchor="middle" class="t-small" style="font-size:9.5px">16A</text><text x="790" y="238" text-anchor="middle" class="t-small" style="font-size:9.5px">16A</text><text x="790" y="254" text-anchor="middle" class="t-small" style="font-size:9.5px">16A</text>
+    <text x="906" y="242">Road B</text><text x="906" y="258" class="t-small">4-core</text>
+    <text x="730" y="290" class="t-small">har MCB ke baad 230V opto → PCF8574</text>
     <!-- earth bar -->
     <path class="w pe" d="M60 300H960" style="stroke-width:4px"/>
     <text x="64" y="322" class="t-small">PE earth bar: panel body, door, SPD, pole earth, 2 nos earth pit</text>

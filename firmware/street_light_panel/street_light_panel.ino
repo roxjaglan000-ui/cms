@@ -51,7 +51,6 @@ const float TZ_HOURS = 5.5;                     // IST
 
 // Fault limits
 const float V_LOW = 180, V_HIGH = 270;          // volts (phase-neutral)
-const float I_MAX = 25;                         // A per phase (10kW ~ 14.6A)
 // LED driver constant-power hote hain, isliye lamp failure POWER (kW) se check hota hai,
 // current se nahi. ~83 lamp/phase pe 5% drop = ~4 lamp band. Isse chhota farq meter
 // accuracy (class 1) me chhup jaata hai.
@@ -74,9 +73,10 @@ const uint32_t SETTLE_MS = 10UL * 60 * 1000;    // ON hone ke 10 min baad hi lam
 #define PIN_RELAY     23   // relay -> contactor coil (AUTO path)
 #define PIN_DOOR      35   // door limit switch, LOW = door band
 #define PIN_AUX       36   // contactor aux NO via 230V opto, LOW = contactor ON
-#define PIN_MCB_R     39   // outgoing MCB R ke baad 230V opto, LOW = supply hai
-#define PIN_MCB_Y     13
-#define PIN_MCB_B     14
+// 6 outgoing MCB (Feeder A: R,Y,B  Feeder B: R,Y,B) ke baad 230V opto -> PCF8574
+// I2C expander (RTC wali I2C line pe). Bit 0-5 = A-R, A-Y, A-B, B-R, B-Y, B-B.
+// Bit LOW = MCB ke baad supply hai.
+#define PCF8574_ADDR  0x20
 #define PIN_SEL_AUTO  15   // selector switch AUTO position, LOW = AUTO
 #define RELAY_ON_LEVEL HIGH
 
@@ -109,6 +109,7 @@ struct Config {
   float basePw[3];               // normal power per phase (kW), auto-learn
   float lampW;                   // ek lamp ki wattage (W), e.g. 40
   float lat, lon;                // panel location (ASTRO ke liye)
+  float iMax;                    // over-current limit per phase (A): 10kW=25, 15kW=35, 22kW=50
   char token[40];                // ThingsBoard access token (provisioning se aata hai)
   uint16_t publishSec;           // normal data kitne second me bheje (data/SIM kharcha kam)
   Special specials[8];           // date-wise override (festival etc.)
@@ -119,13 +120,13 @@ enum Fault : uint32_t {
   F_OVERVOLT = 1UL << 3, F_OVERCURRENT = 1UL << 4,
   F_LAMP_R = 1UL << 5, F_LAMP_Y = 1UL << 6, F_LAMP_B = 1UL << 7,
   F_CONTACTOR = 1UL << 8, F_DAY_BURN = 1UL << 9,
-  F_MCB_R = 1UL << 10, F_MCB_Y = 1UL << 11, F_MCB_B = 1UL << 12,
-  F_DOOR = 1UL << 13, F_METER = 1UL << 14
+  F_MCB = 1UL << 10, F_EARTH_LEAK = 1UL << 11,
+  F_DOOR = 1UL << 12, F_METER = 1UL << 13
 };
 const char* FAULT_KEYS[] = {
   "f_phaseR", "f_phaseY", "f_phaseB", "f_overVolt", "f_overCurrent",
   "f_lampR", "f_lampY", "f_lampB", "f_contactor", "f_dayBurn",
-  "f_mcbR", "f_mcbY", "f_mcbB", "f_door", "f_meter"
+  "f_mcb", "f_earthLeak", "f_door", "f_meter"
 };
 const int FAULT_COUNT = sizeof(FAULT_KEYS) / sizeof(FAULT_KEYS[0]);
 
@@ -134,6 +135,7 @@ bool lightOn = false;
 uint32_t onSinceMs = 0, dayBurnSinceMs = 0;
 int sunriseMin = 360, sunsetMin = 1080;
 int failedLamps[3] = {0, 0, 0};
+String mcbTripped = "";   // jaise "A-R,B-Y"
 uint32_t tRead = 0, tPublish = 0, tConnect = 0;
 
 // ================== TIME HELPERS ==================
@@ -187,6 +189,7 @@ void loadConfig() {
     cfg.dayMask = 0x7F;
     cfg.lampW = 40;
     cfg.lat = DEFAULT_LAT; cfg.lon = DEFAULT_LON;
+    cfg.iMax = 25;
     cfg.publishSec = 300;  // 5 min. Faults/events phir bhi turant jaate hain
   }
 }
@@ -267,12 +270,16 @@ void decideLight() {
 }
 
 // ================== FAULT DETECTION ==================
+uint8_t readExpander() {
+  if (Wire.requestFrom(PCF8574_ADDR, 1) != 1) return 0x00;  // expander na mile to "sab theek" maano
+  return Wire.read();
+}
+
 void checkFaults() {
   uint32_t f = 0;
   const uint32_t phaseBits[3] = {F_PHASE_R, F_PHASE_Y, F_PHASE_B};
   const uint32_t lampBits[3]  = {F_LAMP_R, F_LAMP_Y, F_LAMP_B};
-  const uint32_t mcbBits[3]   = {F_MCB_R, F_MCB_Y, F_MCB_B};
-  const int mcbPins[3]        = {PIN_MCB_R, PIN_MCB_Y, PIN_MCB_B};
+  static const char* MCB_NAMES[6] = {"A-R", "A-Y", "A-B", "B-R", "B-Y", "B-B"};
 
   if (digitalRead(PIN_DOOR) == HIGH) f |= F_DOOR;
   if (!m.ok) { f |= F_METER; faults = f; return; }
@@ -285,11 +292,9 @@ void checkFaults() {
     totalI += m.i[k];
     if (m.v[k] < V_LOW) f |= phaseBits[k];
     if (m.v[k] > V_HIGH) f |= F_OVERVOLT;
-    if (m.i[k] > I_MAX) f |= F_OVERCURRENT;
+    if (m.i[k] > cfg.iMax) f |= F_OVERCURRENT;
     bool phaseOk = m.v[k] >= V_LOW;
 
-    // Outgoing MCB trip: phase hai, contactor ON hai, par MCB ke baad supply nahi
-    if (contactorOn && phaseOk && digitalRead(mcbPins[k]) == HIGH) f |= mcbBits[k];
 
     // Lamp failure: phase ki power normal (base) se 5% se zyada kam
     failedLamps[k] = 0;
@@ -297,6 +302,24 @@ void checkFaults() {
       f |= lampBits[k];
       failedLamps[k] = (int)roundf((cfg.basePw[k] - m.p[k]) * 1000.0 / cfg.lampW);
     }
+  }
+
+  // Outgoing MCB / RCCB trip: phase hai, contactor ON hai, par MCB ke baad supply nahi
+  mcbTripped = "";
+  if (contactorOn) {
+    uint8_t in = readExpander();
+    int dead = 0, live = 0;
+    for (int j = 0; j < 6; j++) {
+      if (m.v[j % 3] < V_LOW) continue;          // phase hi nahi hai, wo phase fault hai
+      live++;
+      if (in & (1 << j)) {                        // HIGH = supply nahi
+        dead++;
+        if (mcbTripped.length()) mcbTripped += ",";
+        mcbTripped += MCB_NAMES[j];
+      }
+    }
+    if (live > 0 && dead == live) f |= F_EARTH_LEAK;  // sab feeder band = RCCB trip
+    else if (dead > 0) f |= F_MCB;
   }
 
   // Pehli baar: base power khud seekh lo
@@ -335,6 +358,7 @@ void buildTelemetry(JsonObject v) {
   v["sunrise"] = sunriseMin; v["sunset"] = sunsetMin;
   v["rssi"] = modem.getSignalQuality();
   for (int b = 0; b < FAULT_COUNT; b++) v[FAULT_KEYS[b]] = (bool)(faults & (1UL << b));
+  v["mcbTripped"] = mcbTripped;
 }
 
 void logOffline(const String& line) {
@@ -423,6 +447,8 @@ void onMqtt(char* topic, byte* payload, unsigned int len) {
     for (int k = 0; k < 3; k++) cfg.basePw[k] = m.p[k];
   } else if (method == "setInterval") {     // seconds, 60..3600
     cfg.publishSec = constrain(p.as<int>(), 60, 3600);
+  } else if (method == "setLimits") {        // {"iMax":25}
+    cfg.iMax = p["iMax"] | cfg.iMax;
   } else if (method == "setLampW") {         // 40
     cfg.lampW = p.as<float>();
   } else if (method == "setLocation") {      // {"lat":28.61,"lon":77.21}
@@ -493,10 +519,11 @@ void ensureConnected() {
 void setup() {
   Serial.begin(115200);
   pinMode(PIN_RELAY, OUTPUT); digitalWrite(PIN_RELAY, !RELAY_ON_LEVEL);
-  pinMode(PIN_DOOR, INPUT); pinMode(PIN_AUX, INPUT); pinMode(PIN_MCB_R, INPUT);  // external pull-up
-  pinMode(PIN_MCB_Y, INPUT_PULLUP); pinMode(PIN_MCB_B, INPUT_PULLUP); pinMode(PIN_SEL_AUTO, INPUT_PULLUP);
+  pinMode(PIN_DOOR, INPUT); pinMode(PIN_AUX, INPUT);  // external pull-up
+  pinMode(PIN_SEL_AUTO, INPUT_PULLUP);
 
   Wire.begin(I2C_SDA, I2C_SCL);
+  Wire.beginTransmission(PCF8574_ADDR); Wire.write(0xFF); Wire.endTransmission();  // sab pins input
   rtc.begin();
   LittleFS.begin(true);
   loadConfig();

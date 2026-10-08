@@ -22,7 +22,7 @@ ThingsBoard is an open-source IoT platform with dashboards, alarms, history, map
 
 ## Telemetry keys
 
-`vR vY vB`, `iR iY iB`, `kwR kwY kwB`, `pfR pfY pfB`, `kwTotal`, `freq`, `kwh`, `light`, `mode`, `selector`, `sunrise`, `sunset` (minutes from midnight), `rssi`, `lampsFailedR/Y/B`, fault flags `f_*` (see [logic.md](logic.md)), and `event`.
+`vR vY vB`, `iR iY iB`, `kwR kwY kwB`, `pfR pfY pfB`, `kwTotal`, `freq`, `kwh`, `light`, `mode`, `selector`, `sunrise`, `sunset` (minutes from midnight), `rssi`, `lampsFailedR/Y/B`, fault flags `f_*` (see [logic.md](logic.md)), `mcbTripped`, and `event`.
 
 ## Remote commands (RPC)
 
@@ -35,6 +35,7 @@ ThingsBoard is an open-source IoT platform with dashboards, alarms, history, map
 | `setSpecial` | `{"slot":0,"date":"11-08","on":"17:30","off":"06:30"}` | Different times on one date (8 slots) |
 | `learnBaseline` | none | Re-learn normal phase currents after lamps are replaced |
 | `setInterval` | `300` | Seconds between normal data uploads (60–3600). Lower data cost with a longer interval. |
+| `setLimits` | `{"iMax":25}` | Over-current limit per phase (25 A for 10 kW, 35 A for 15 kW, 50 A for 22.5 kW) |
 | `setLampW` | `40` | Wattage of one lamp, for counting failed lamps |
 | `setLocation` | `{"lat":28.61,"lon":77.21}` | Panel location for sunrise/sunset (set once per panel) |
 | `getStatus` | none | Full live status in the reply |

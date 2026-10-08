@@ -18,7 +18,7 @@ text{font-family:"JetBrains Mono",Consolas,monospace;font-size:12px;fill:#1d2321
       <rect class="box" x="290" y="40" width="120" height="58" rx="4"/><text x="350" y="64" text-anchor="middle" class="t-head">Energy Meter</text><text x="350" y="84" text-anchor="middle" class="t-small">3Φ · RS485 Modbus</text>
       <rect class="box" x="430" y="40" width="120" height="58" rx="4"/><text x="490" y="64" text-anchor="middle" class="t-head">Al Busbar</text><text x="490" y="84" text-anchor="middle" class="t-small">R · Y · B · N</text>
       <rect class="box" x="570" y="40" width="120" height="58" rx="4"/><text x="630" y="64" text-anchor="middle" class="t-head">Contactor K1</text><text x="630" y="84" text-anchor="middle" class="t-small">4P 40A AC-1</text>
-      <rect class="box" x="710" y="40" width="110" height="58" rx="4"/><text x="765" y="64" text-anchor="middle" class="t-head">Outgoing</text><text x="765" y="84" text-anchor="middle" class="t-small">3 × SP MCB 20A</text>
+      <rect class="box" x="710" y="40" width="110" height="58" rx="4"/><text x="765" y="64" text-anchor="middle" class="t-head">Outgoing</text><text x="765" y="84" text-anchor="middle" class="t-small">2 feeder · 6 MCB · RCCB</text>
       <rect class="box" x="840" y="40" width="110" height="58" rx="4"/><text x="895" y="64" text-anchor="middle" class="t-head">Street Lights</text><text x="895" y="84" text-anchor="middle" class="t-small">R/Y/B feeders</text>
       <path class="w" d="M125 69H150M270 69H290M410 69H430M550 69H570M690 69H710M820 69H840" style="stroke-width:4px"/>
     </g>

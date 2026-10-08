@@ -14,7 +14,8 @@ Rates are rough estimates as of October 2026. They can vary 15–25% by brand, c
 | 4 | Aluminium busbar set | R, Y, B, N strips + SMC insulators | 1 | 1,200–1,800 |
 | 5 | 3-phase energy meter | Selec MFM383A-C (RS485) + 3 CT 30/5 A. Indian make | 1 | 3,800–4,400 |
 | 6 | Power contactor | 4P 40 A AC-1, 230 V coil, + 1NO aux, reputed Indian brand | 1 | 1,800–2,500 |
-| 7 | Outgoing MCB | SP 20 A C-curve | 3 | 450–600 |
+| 7 | Outgoing MCB | SP 16 A C-curve, 3 per feeder × 2 feeders | 6 | 900–1,200 |
+| 7a | RCCB (earth leakage) | 4P 40 A, 300 mA. Required by CEA safety regulations for loads above 5 kW; also protects the long feeders | 1 | 2,000–2,800 |
 | 8 | Control MCB | SP 6 A C-curve | 2 | 300 |
 | 9 | Selector switch | 3-position AUTO-OFF-MAN, 22 mm | 1 | 200–250 |
 | 10 | Indicator lamps | 22 mm LED: R, Y, B, Light ON | 4 | 240–300 |
@@ -24,15 +25,16 @@ Rates are rough estimates as of October 2026. They can vary 15–25% by brand, c
 | 14 | RTC module | DS3231 | 1 | 120–150 |
 | 15 | RS485 module | TTL ↔ RS485, auto direction | 1 | 100–150 |
 | 16 | Relay module | 1-channel 5 V opto-isolated | 1 | 80–120 |
-| 17 | AC sense module | 230 V opto-isolated, 4 channel | 1 | 250–300 |
+| 17 | AC sense module | 230 V opto-isolated, 8 channel (6 outgoing MCBs + contactor aux + spare) | 1 | 400–500 |
+| 17a | I/O expander | PCF8574 I2C module (reads the 6 MCB inputs) | 1 | 80–120 |
 | 18 | Door limit switch | | 1 | 100–150 |
 | 19 | Antenna extension | SMA cable + panel-mount antenna | 1 | 250–300 |
 | 20 | Terminal blocks | 63 A for 16/25 sq mm × 4 (spec), control terminals | 1 set | 900–1,100 |
 | 21 | Wiring material | Cu wire, lugs, ferrules, DIN rail, duct, glands | 1 set | 1,500–2,000 |
 | 22 | Earthing | Earth bar, stud, washers | 1 set | 250–300 |
-| | **Panel total** (excluding poles, lights, cable, labour) | | | **≈ 23,000–29,000** |
+| | **Panel total** (excluding poles, lights, cable, labour) | | | **≈ 25,500–32,500** |
 
-The first design came to about ₹40,000–60,000, so this saves roughly ₹17,000–31,000 per panel.
+The first design came to about ₹40,000–60,000, so this saves roughly ₹14,500–27,500 per panel. This BOM is for a 10 kW panel (250 poles × 40 W); for bigger lamps see the rating table in [scale-and-bid.md](scale-and-bid.md).
 
 ## Where the saving comes from
 
