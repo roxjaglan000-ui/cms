@@ -41,14 +41,21 @@
 const char APN[]          = "airtelgprs.com";   // Jio: "jionet", Vi: "www", BSNL: "bsnlnet"
 const char MQTT_HOST[]    = "cms.example.com";  // aapka ThingsBoard server
 const uint16_t MQTT_PORT  = 1883;
-const char DEVICE_TOKEN[] = "PANEL_001_TOKEN";  // ThingsBoard device access token
-const float LAT = 28.61, LON = 77.21;           // panel ki location (example: Delhi)
+// 160 panels me SAME firmware jaata hai. Har panel pehli baar online aate hi
+// ThingsBoard "device provisioning" se apna token khud le leta hai (naam = CMS-<IMEI>).
+// Location CMS se setLocation command se set hoti hai (ya neeche default).
+const char PROVISION_KEY[]    = "cms-provision-key";     // ThingsBoard device profile me set karo
+const char PROVISION_SECRET[] = "cms-provision-secret";
+const float DEFAULT_LAT = 28.61, DEFAULT_LON = 77.21;    // jab tak setLocation na aaye (example: Delhi)
 const float TZ_HOURS = 5.5;                     // IST
 
 // Fault limits
 const float V_LOW = 180, V_HIGH = 270;          // volts (phase-neutral)
 const float I_MAX = 25;                         // A per phase (10kW ~ 14.6A)
-const float LAMP_DROP = 0.80;                   // current base ke 80% se kam = lamp fail
+// LED driver constant-power hote hain, isliye lamp failure POWER (kW) se check hota hai,
+// current se nahi. ~83 lamp/phase pe 5% drop = ~4 lamp band. Isse chhota farq meter
+// accuracy (class 1) me chhup jaata hai.
+const float LAMP_DROP = 0.95;
 const uint32_t SETTLE_MS = 10UL * 60 * 1000;    // ON hone ke 10 min baad hi lamp check
 
 // ================== PINS (LilyGO T-A7670 / T-SIM7600) ==================
@@ -99,8 +106,10 @@ struct Config {
   int16_t onMin, offMin;         // SCHEDULE: minutes from midnight
   uint8_t dayMask;               // bit0=Sun ... bit6=Sat
   bool manualState;
-  float base[3];                 // normal current per phase (A), auto-learn
-  float lampAmp;                 // ek lamp ka current (A), e.g. 150W LED ~0.7A
+  float basePw[3];               // normal power per phase (kW), auto-learn
+  float lampW;                   // ek lamp ki wattage (W), e.g. 40
+  float lat, lon;                // panel location (ASTRO ke liye)
+  char token[40];                // ThingsBoard access token (provisioning se aata hai)
   uint16_t publishSec;           // normal data kitne second me bheje (data/SIM kharcha kam)
   Special specials[8];           // date-wise override (festival etc.)
 } cfg;
@@ -141,7 +150,7 @@ int dayOfYear(const DateTime& d) {
 // Sunrise/sunset (NOAA "Almanac" method). Returns local minutes from midnight, -1 if none.
 int sunEvent(int doy, bool rising) {
   const float RAD = M_PI / 180.0, ZENITH = 90.833;
-  float lngHour = LON / 15.0;
+  float lngHour = cfg.lon / 15.0;
   float t = doy + ((rising ? 6 : 18) - lngHour) / 24.0;
   float M = 0.9856 * t - 3.289;
   float L = fmod(M + 1.916 * sin(M * RAD) + 0.020 * sin(2 * M * RAD) + 282.634 + 360, 360);
@@ -150,7 +159,7 @@ int sunEvent(int doy, bool rising) {
   RA /= 15;
   float sinDec = 0.39782 * sin(L * RAD);
   float cosDec = cos(asin(sinDec));
-  float cosH = (cos(ZENITH * RAD) - sinDec * sin(LAT * RAD)) / (cosDec * cos(LAT * RAD));
+  float cosH = (cos(ZENITH * RAD) - sinDec * sin(cfg.lat * RAD)) / (cosDec * cos(cfg.lat * RAD));
   if (cosH > 1 || cosH < -1) return -1;
   float H = (rising ? 360 - acos(cosH) / RAD : acos(cosH) / RAD) / 15;
   float T = H + RA - 0.06571 * t - 6.622;
@@ -176,7 +185,8 @@ void loadConfig() {
     cfg.onMin = 18 * 60 + 30;
     cfg.offMin = 6 * 60;
     cfg.dayMask = 0x7F;
-    cfg.lampAmp = 0.7;
+    cfg.lampW = 40;
+    cfg.lat = DEFAULT_LAT; cfg.lon = DEFAULT_LON;
     cfg.publishSec = 300;  // 5 min. Faults/events phir bhi turant jaate hain
   }
 }
@@ -281,17 +291,17 @@ void checkFaults() {
     // Outgoing MCB trip: phase hai, contactor ON hai, par MCB ke baad supply nahi
     if (contactorOn && phaseOk && digitalRead(mcbPins[k]) == HIGH) f |= mcbBits[k];
 
-    // Lamp failure: current normal (base) se kaafi kam
+    // Lamp failure: phase ki power normal (base) se 5% se zyada kam
     failedLamps[k] = 0;
-    if (settled && phaseOk && cfg.base[k] > 0.5 && m.i[k] < cfg.base[k] * LAMP_DROP) {
+    if (settled && phaseOk && cfg.basePw[k] > 0.1 && m.p[k] < cfg.basePw[k] * LAMP_DROP) {
       f |= lampBits[k];
-      failedLamps[k] = (int)roundf((cfg.base[k] - m.i[k]) / cfg.lampAmp);
+      failedLamps[k] = (int)roundf((cfg.basePw[k] - m.p[k]) * 1000.0 / cfg.lampW);
     }
   }
 
-  // Pehli baar: base current khud seekh lo
-  if (settled && cfg.base[0] == 0 && cfg.base[1] == 0 && cfg.base[2] == 0 && totalI > 1.0) {
-    for (int k = 0; k < 3; k++) cfg.base[k] = m.i[k];
+  // Pehli baar: base power khud seekh lo
+  if (settled && cfg.basePw[0] == 0 && cfg.basePw[1] == 0 && cfg.basePw[2] == 0 && totalI > 1.0) {
+    for (int k = 0; k < 3; k++) cfg.basePw[k] = m.p[k];
     saveConfig();
   }
 
@@ -373,8 +383,19 @@ void publishEvents() {
 }
 
 // ================== COMMANDS FROM CMS (RPC) ==================
+bool provisioned = false;
+
 void onMqtt(char* topic, byte* payload, unsigned int len) {
   String t(topic);
+  if (t == "/provision/response") {           // {"status":"SUCCESS","credentialsValue":"..."}
+    JsonDocument r;
+    if (!deserializeJson(r, payload, len) && String(r["status"] | "") == "SUCCESS") {
+      strlcpy(cfg.token, r["credentialsValue"] | "", sizeof(cfg.token));
+      saveConfig();
+      provisioned = true;
+    }
+    return;
+  }
   String reqId = t.substring(t.lastIndexOf('/') + 1);
   JsonDocument req;
   if (deserializeJson(req, payload, len)) return;
@@ -399,11 +420,13 @@ void onMqtt(char* topic, byte* payload, unsigned int len) {
     if (slot >= 0 && slot < 8) cfg.specials[slot] = {(uint16_t)(mo * 100 + dy),
       (int16_t)parseHHMM(p["on"] | "00:00"), (int16_t)parseHHMM(p["off"] | "00:00")};
   } else if (method == "learnBaseline") {     // naye lamps lagne ke baad
-    for (int k = 0; k < 3; k++) cfg.base[k] = m.i[k];
+    for (int k = 0; k < 3; k++) cfg.basePw[k] = m.p[k];
   } else if (method == "setInterval") {     // seconds, 60..3600
     cfg.publishSec = constrain(p.as<int>(), 60, 3600);
-  } else if (method == "setLampAmp") {
-    cfg.lampAmp = p.as<float>();
+  } else if (method == "setLampW") {         // 40
+    cfg.lampW = p.as<float>();
+  } else if (method == "setLocation") {      // {"lat":28.61,"lon":77.21}
+    cfg.lat = p["lat"] | cfg.lat; cfg.lon = p["lon"] | cfg.lon;
   } else if (method == "getStatus") {
     buildTelemetry(res["status"].to<JsonObject>());
   } else {
@@ -437,10 +460,32 @@ void ensureConnected() {
   mqtt.setCallback(onMqtt);
   mqtt.setKeepAlive(30);
   mqtt.setBufferSize(1024);
-  if (mqtt.connect("panel", DEVICE_TOKEN, nullptr)) {
+  String imei = modem.getIMEI();
+  String clientId = "CMS-" + imei;          // har panel ka alag client id
+
+  // Pehli baar: ThingsBoard se apna token lo
+  if (cfg.token[0] == 0) {
+    if (!mqtt.connect(clientId.c_str(), "provision", nullptr)) return;
+    mqtt.subscribe("/provision/response");
+    JsonDocument req;
+    req["deviceName"] = clientId;
+    req["provisionDeviceKey"] = PROVISION_KEY;
+    req["provisionDeviceSecret"] = PROVISION_SECRET;
+    String out; serializeJson(req, out);
+    provisioned = false;
+    mqtt.publish("/provision/request", out.c_str());
+    for (uint32_t t0 = millis(); !provisioned && millis() - t0 < 15000;) mqtt.loop();
+    mqtt.disconnect();
+    if (!provisioned) return;               // 30 s baad phir try
+  }
+
+  if (mqtt.connect(clientId.c_str(), cfg.token, nullptr)) {
     mqtt.subscribe("v1/devices/me/rpc/request/+", 1);
     flushOffline();
     publishTelemetry();
+  } else if (mqtt.state() == MQTT_CONNECT_UNAUTHORIZED) {
+    cfg.token[0] = 0;  // CMS pe device delete hua: agli baar dobara provision
+    saveConfig();
   }
 }
 

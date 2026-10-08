@@ -53,7 +53,7 @@ flowchart TD
 | Phase fail | `f_phaseR/Y/B` | Phase voltage below 180 V | Critical |
 | Over voltage | `f_overVolt` | Any phase above 270 V | Major |
 | Over current | `f_overCurrent` | Any phase above 25 A | Major |
-| Lamp failure | `f_lampR/Y/B` | 10 min after switching on, phase current below 80% of the learned baseline. Lamps failed ≈ (baseline − current) / current of one lamp. The baseline is learned on the first night or via `learnBaseline`. | Major |
+| Lamp failure | `f_lampR/Y/B` | 10 min after switching on, phase **power** below 95% of the learned baseline (LED drivers are constant-power, so power is steadier than current). Lamps failed ≈ (baseline kW − present kW) / one lamp's watts. The baseline is learned on the first night or via `learnBaseline`. With ~83 lamps per phase this catches about 4 or more failed lamps per phase; a single lamp is within meter accuracy. | Major |
 | Outgoing MCB trip | `f_mcbR/Y/B` | Phase voltage present and contactor on, but no 230 V after the MCB | Critical |
 | Contactor fault | `f_contactor` | Commanded ON, but no aux feedback or current after 30 s | Critical |
 | Day burning | `f_dayBurn` | Commanded OFF, but current flowing for more than 1 min | Major |
