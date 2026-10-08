@@ -1,22 +1,32 @@
 /*
   Smart Feeder Control Panel (Street Light) -> CMS dashboard
   ----------------------------------------------------------
-  Board  : LilyGO T-SIM7600 (ESP32 + 4G LTE, India ke liye "E" version)
-  Meter  : Eastron SDM630-Modbus V2 (3-phase, RS485, slave id 1, 9600 8N1)
+  Board  : LilyGO T-A7670E (ESP32 + 4G LTE Cat-1, sasta)  [ya T-SIM7600E]
+  Meter  : Selec MFM383A-C (3-phase, RS485, slave id 1, 9600 8N1)  [ya Eastron SDM630]
   RTC    : DS3231 (I2C)
   CMS    : ThingsBoard (MQTT, device access token)
 
   Libraries (Arduino Library Manager se install karo):
     TinyGSM, PubSubClient, ModbusMaster, RTClib, ArduinoJson (v7)
+    (T-A7670 ke liye agar TinyGSM me A7670 na mile to LilyGO-T-A76XX repo
+     ke "lib" folder wali TinyGSM use karo)
   Board package: "esp32 by Espressif", board = "ESP32 Dev Module",
     Partition scheme = "Default 4MB with spiffs" (LittleFS ke liye)
 
-  NOTE: Pin numbers LilyGO T-SIM7600 ke hisaab se hain. Apne board ka
+  NOTE: Pin numbers LilyGO T-A7670 / T-SIM7600 ke hisaab se hain. Apne board ka
         pinout zaroor check karo. GPIO 34-39 input-only hain, inpe
         10k external pull-up lagana hai.
 */
 
-#define TINY_GSM_MODEM_SIM7600
+// ---- Hardware choice: ek board aur ek meter chuno ----
+#define BOARD_T_A7670        // sasta (tender default). Mehenga option: BOARD_T_SIM7600
+#define METER_SELEC_MFM383A  // sasta (tender default). Mehenga option: METER_SDM630
+
+#if defined(BOARD_T_A7670)
+  #define TINY_GSM_MODEM_A7670
+#else
+  #define TINY_GSM_MODEM_SIM7600
+#endif
 #define TINY_GSM_RX_BUFFER 1024
 #include <TinyGsmClient.h>
 #include <PubSubClient.h>
@@ -41,11 +51,15 @@ const float I_MAX = 25;                         // A per phase (10kW ~ 14.6A)
 const float LAMP_DROP = 0.80;                   // current base ke 80% se kam = lamp fail
 const uint32_t SETTLE_MS = 10UL * 60 * 1000;    // ON hone ke 10 min baad hi lamp check
 
-// ================== PINS (LilyGO T-SIM7600) ==================
+// ================== PINS (LilyGO T-A7670 / T-SIM7600) ==================
 #define MODEM_TX      27
 #define MODEM_RX      26
 #define MODEM_PWRKEY  4
-#define MODEM_FLIGHT  25
+#if defined(BOARD_T_A7670)
+  #define MODEM_POWERON 12   // board ka modem power enable
+#else
+  #define MODEM_FLIGHT  25
+#endif
 #define RS485_RX      18   // TTL-RS485 module (auto direction) ka TXD
 #define RS485_TX      19   // TTL-RS485 module ka RXD
 #define I2C_SDA       21   // DS3231
@@ -87,6 +101,7 @@ struct Config {
   bool manualState;
   float base[3];                 // normal current per phase (A), auto-learn
   float lampAmp;                 // ek lamp ka current (A), e.g. 150W LED ~0.7A
+  uint16_t publishSec;           // normal data kitne second me bheje (data/SIM kharcha kam)
   Special specials[8];           // date-wise override (festival etc.)
 } cfg;
 
@@ -162,28 +177,47 @@ void loadConfig() {
     cfg.offMin = 6 * 60;
     cfg.dayMask = 0x7F;
     cfg.lampAmp = 0.7;
+    cfg.publishSec = 300;  // 5 min. Faults/events phir bhi turant jaate hain
   }
 }
 void saveConfig() { prefs.putBytes("cfg", &cfg, sizeof(cfg)); }
 
 // ================== METER (Modbus RS485) ==================
-float regFloat(uint8_t idx) {
-  uint32_t raw = ((uint32_t)meterBus.getResponseBuffer(idx) << 16) | meterBus.getResponseBuffer(idx + 1);
-  float f; memcpy(&f, &raw, 4); return f;
+// Register map (input registers, function 04, float = 2 registers).
+// Selec ka map aggsoft.com ki list se hai; word order meter ke manual ya
+// "Modbus Poll" software se ek baar check kar lo (galat ho to WORD_SWAP badlo).
+#if defined(METER_SDM630)
+  const uint16_t R_V[3] = {0, 2, 4}, R_I[3] = {6, 8, 10}, R_P[3] = {12, 14, 16}, R_PF[3] = {30, 32, 34};
+  const uint16_t R_KW = 52, R_FREQ = 70, R_KWH = 72;
+  const float P_DIV = 1000.0;   // SDM630 power W me deta hai
+  const bool WORD_SWAP = false; // high word pehle
+#else  // Selec MFM383A-C
+  const uint16_t R_V[3] = {0, 2, 4}, R_I[3] = {16, 18, 20}, R_P[3] = {24, 26, 28}, R_PF[3] = {48, 50, 52};
+  const uint16_t R_KW = 42, R_FREQ = 56, R_KWH = 58;
+  const float P_DIV = 1.0;      // kW me
+  const bool WORD_SWAP = true;  // low word pehle (verify karo)
+#endif
+
+bool readFloat(uint16_t reg, float& out) {
+  if (meterBus.readInputRegisters(reg, 2) != meterBus.ku8MBSuccess) return false;
+  uint16_t a = meterBus.getResponseBuffer(0), b = meterBus.getResponseBuffer(1);
+  uint32_t raw = WORD_SWAP ? ((uint32_t)b << 16) | a : ((uint32_t)a << 16) | b;
+  memcpy(&out, &raw, 4);
+  return true;
 }
 
 void readMeter() {
-  // SDM630: 0x0000 V1-V3, 0x0006 I1-I3, 0x000C P1-P3 (W), 0x001E PF1-PF3
-  if (meterBus.readInputRegisters(0x0000, 36) != meterBus.ku8MBSuccess) { m.ok = false; return; }
+  bool ok = true;
   for (int k = 0; k < 3; k++) {
-    m.v[k]  = regFloat(0x00 + k * 2);
-    m.i[k]  = regFloat(0x06 + k * 2);
-    m.p[k]  = regFloat(0x0C + k * 2) / 1000.0;  // kW
-    m.pf[k] = regFloat(0x1E + k * 2);
+    ok &= readFloat(R_V[k], m.v[k]);
+    ok &= readFloat(R_I[k], m.i[k]);
+    ok &= readFloat(R_P[k], m.p[k]);  m.p[k] /= P_DIV;
+    ok &= readFloat(R_PF[k], m.pf[k]);
   }
-  if (meterBus.readInputRegisters(0x0034, 2) == meterBus.ku8MBSuccess) m.kwTotal = regFloat(0) / 1000.0;
-  if (meterBus.readInputRegisters(0x0046, 4) == meterBus.ku8MBSuccess) { m.freq = regFloat(0); m.kwh = regFloat(2); }
-  m.ok = true;
+  ok &= readFloat(R_KW, m.kwTotal);  m.kwTotal /= P_DIV;
+  ok &= readFloat(R_FREQ, m.freq);
+  ok &= readFloat(R_KWH, m.kwh);
+  m.ok = ok;
 }
 
 // ================== LIGHT DECISION ==================
@@ -366,6 +400,8 @@ void onMqtt(char* topic, byte* payload, unsigned int len) {
       (int16_t)parseHHMM(p["on"] | "00:00"), (int16_t)parseHHMM(p["off"] | "00:00")};
   } else if (method == "learnBaseline") {     // naye lamps lagne ke baad
     for (int k = 0; k < 3; k++) cfg.base[k] = m.i[k];
+  } else if (method == "setInterval") {     // seconds, 60..3600
+    cfg.publishSec = constrain(p.as<int>(), 60, 3600);
   } else if (method == "setLampAmp") {
     cfg.lampAmp = p.as<float>();
   } else if (method == "getStatus") {
@@ -424,9 +460,15 @@ void setup() {
   meterBus.begin(1, Serial2);
 
   // 4G modem power on
+#if defined(BOARD_T_A7670)
+  pinMode(MODEM_POWERON, OUTPUT); digitalWrite(MODEM_POWERON, HIGH);
+  pinMode(MODEM_PWRKEY, OUTPUT);
+  digitalWrite(MODEM_PWRKEY, LOW); delay(100); digitalWrite(MODEM_PWRKEY, HIGH); delay(100); digitalWrite(MODEM_PWRKEY, LOW);
+#else
   pinMode(MODEM_PWRKEY, OUTPUT);
   digitalWrite(MODEM_PWRKEY, HIGH); delay(300); digitalWrite(MODEM_PWRKEY, LOW);
   pinMode(MODEM_FLIGHT, OUTPUT); digitalWrite(MODEM_FLIGHT, HIGH);
+#endif
   SerialAT.begin(115200, SERIAL_8N1, MODEM_RX, MODEM_TX);
   delay(3000);
   modem.restart();
@@ -440,7 +482,7 @@ void loop() {
     tRead = millis();
     readMeter(); decideLight(); checkFaults(); publishEvents();
   }
-  if (millis() - tPublish > 60000) {            // har 1 min data log
+  if (millis() - tPublish > cfg.publishSec * 1000UL) {  // default har 5 min data log
     tPublish = millis();
     publishTelemetry();
   }

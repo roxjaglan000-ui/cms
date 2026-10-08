@@ -1,6 +1,6 @@
 # Working logic
 
-Every 5 seconds the controller reads the meter, decides whether the lights should be on, and checks for faults. Every minute it sends telemetry to the CMS. If the network is down, data is stored in flash (about 1 MB) and sent when the network returns. Switching never depends on the network: the timer runs inside the panel.
+Every 5 seconds the controller reads the meter, decides whether the lights should be on, and checks for faults. Every 5 minutes (configurable from the CMS) it sends telemetry. Faults and events go immediately. If the network is down, data is stored in flash (about 1 MB) and sent when the network returns. Switching never depends on the network: the timer runs inside the panel.
 
 ## Modes
 
@@ -35,7 +35,7 @@ flowchart TD
   E --> M
   M --> N{"Fault raised or cleared?"}
   N -- "Yes" --> O["Send event to CMS immediately"]
-  N -- "No" --> P{"1 minute passed?"}
+  N -- "No" --> P{"Interval passed? (default 5 min)"}
   O --> P
   P -- "No" --> C
   P -- "Yes" --> Q{"4G connected?"}

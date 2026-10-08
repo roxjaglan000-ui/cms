@@ -33,5 +33,6 @@ ThingsBoard is an open-source IoT platform with dashboards, alarms, history, map
 | `setAstro` | `{"onOffset":10,"offOffset":-10}` | Minutes after sunset / relative to sunrise |
 | `setSpecial` | `{"slot":0,"date":"11-08","on":"17:30","off":"06:30"}` | Different times on one date (8 slots) |
 | `learnBaseline` | none | Re-learn normal phase currents after lamps are replaced |
+| `setInterval` | `300` | Seconds between normal data uploads (60–3600). Lower data cost with a longer interval. |
 | `setLampAmp` | `0.7` | Current of one lamp, for counting failed lamps |
 | `getStatus` | none | Full live status in the reply |

@@ -20,7 +20,7 @@ text{font-family:"JetBrains Mono",Consolas,monospace;font-size:12px;fill:#1d2321
     <!-- incomer -->
     <rect class="box" x="90" y="52" width="70" height="126" rx="3" fill-opacity=".85"/>
     <text x="125" y="36" text-anchor="middle" class="t-head">Incomer</text>
-    <text x="125" y="118" text-anchor="middle" class="t-small">4P</text><text x="125" y="132" text-anchor="middle" class="t-small">MCCB</text><text x="125" y="146" text-anchor="middle" class="t-small">40A</text>
+    <text x="125" y="118" text-anchor="middle" class="t-small">4P</text><text x="125" y="132" text-anchor="middle" class="t-small">MCB</text><text x="125" y="146" text-anchor="middle" class="t-small">40A</text>
     <!-- SPD -->
     <path class="w-thin r" d="M195 70V220"/><path class="w-thin y" d="M205 100V220"/><path class="w-thin b" d="M215 130V220"/><path class="w-thin n" d="M225 160V220"/>
     <circle class="dot" cx="195" cy="70" r="3"/><circle class="dot" cx="205" cy="100" r="3"/><circle class="dot" cx="215" cy="130" r="3"/><circle class="dot" cx="225" cy="160" r="3"/>
@@ -29,7 +29,7 @@ text{font-family:"JetBrains Mono",Consolas,monospace;font-size:12px;fill:#1d2321
     <!-- meter -->
     <rect class="box" x="290" y="52" width="90" height="126" rx="3"/>
     <text x="335" y="36" text-anchor="middle" class="t-head">Energy Meter</text>
-    <text x="335" y="112" text-anchor="middle" class="t-small">SDM630</text><text x="335" y="126" text-anchor="middle" class="t-small">direct 100A</text>
+    <text x="335" y="112" text-anchor="middle" class="t-small">Selec MFM383A</text><text x="335" y="126" text-anchor="middle" class="t-small">+ 3 CT 30/5A</text>
     <path class="sig" d="M335 178V232H300"/><text x="252" y="282" class="t-small">RS485 A/B → controller</text>
     <path class="sig" d="M300 232V270"/>
     <!-- control tap -->

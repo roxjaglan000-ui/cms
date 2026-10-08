@@ -14,7 +14,7 @@ text{font-family:"JetBrains Mono",Consolas,monospace;font-size:12px;fill:#1d2321
     <!-- power row -->
     <g>
       <rect class="box" x="10" y="40" width="115" height="58" rx="4"/><text x="67" y="64" text-anchor="middle" class="t-head">3Φ Supply</text><text x="67" y="84" text-anchor="middle" class="t-small">415 V + N</text>
-      <rect class="box" x="150" y="40" width="120" height="58" rx="4"/><text x="210" y="64" text-anchor="middle" class="t-head">Incomer</text><text x="210" y="84" text-anchor="middle" class="t-small">4P MCCB 40A + SPD</text>
+      <rect class="box" x="150" y="40" width="120" height="58" rx="4"/><text x="210" y="64" text-anchor="middle" class="t-head">Incomer</text><text x="210" y="84" text-anchor="middle" class="t-small">4P MCB 40A + SPD</text>
       <rect class="box" x="290" y="40" width="120" height="58" rx="4"/><text x="350" y="64" text-anchor="middle" class="t-head">Energy Meter</text><text x="350" y="84" text-anchor="middle" class="t-small">3Φ · RS485 Modbus</text>
       <rect class="box" x="430" y="40" width="120" height="58" rx="4"/><text x="490" y="64" text-anchor="middle" class="t-head">Al Busbar</text><text x="490" y="84" text-anchor="middle" class="t-small">R · Y · B · N</text>
       <rect class="box" x="570" y="40" width="120" height="58" rx="4"/><text x="630" y="64" text-anchor="middle" class="t-head">Contactor K1</text><text x="630" y="84" text-anchor="middle" class="t-small">4P 40A AC-1</text>
@@ -25,7 +25,7 @@ text{font-family:"JetBrains Mono",Consolas,monospace;font-size:12px;fill:#1d2321
     <!-- controller row -->
     <rect class="box-acc" x="430" y="196" width="210" height="64" rx="4"/>
     <text x="535" y="222" text-anchor="middle" class="t-head">Controller</text>
-    <text x="535" y="242" text-anchor="middle" class="t-small">ESP32 + 4G (LilyGO T-SIM7600)</text>
+    <text x="535" y="242" text-anchor="middle" class="t-small">ESP32 + 4G (LilyGO T-A7670)</text>
     <rect class="box" x="150" y="216" width="150" height="56" rx="4"/>
     <text x="225" y="238" text-anchor="middle" class="t-head">Inputs</text>
     <text x="225" y="257" text-anchor="middle" class="t-small">Door · Aux · Selector</text>

@@ -11,15 +11,16 @@
 | [docs/tender-spec.md](docs/tender-spec.md) | Tender requirements (with the original screenshot) and where each is covered |
 | [docs/design.md](docs/design.md) | Load calculation, power wiring, control wiring, pin map |
 | [docs/logic.md](docs/logic.md) | Operating modes, flowchart, fault detection rules |
-| [docs/bom.md](docs/bom.md) | Components list with approximate prices in INR |
+| [docs/bom.md](docs/bom.md) | Lowest-cost tender components list with INR prices, savings and running cost |
 | [docs/cms-dashboard.md](docs/cms-dashboard.md) | ThingsBoard server setup, telemetry keys, remote commands |
 | [docs/build-and-test.md](docs/build-and-test.md) | Build order, test steps, safety |
 | [firmware/street_light_panel/](firmware/street_light_panel/street_light_panel.ino) | ESP32 + 4G controller code (Arduino IDE) |
 
 ## Hardware at a glance
 
-- Controller: LilyGO T-SIM7600E (ESP32 + 4G LTE)
-- Energy meter: Eastron SDM630-Modbus V2 (RS485)
+- Controller: LilyGO T-A7670E (ESP32 + 4G LTE Cat-1)
+- Energy meter: Selec MFM383A-C with 3 CTs (RS485)
+- Panel cost: about ₹23,000–29,000 for the tender build, excluding poles and lights ([bom.md](docs/bom.md))
 - Switching: 4P 40 A contactor with an AUTO / OFF / MANUAL selector, so the lights still work if the controller fails
 - CMS: ThingsBoard over MQTT
 
@@ -29,5 +30,4 @@ Design stage. The firmware has not been compiled or tested on hardware yet. Benc
 
 Open questions:
 - Number of lamps per panel and their wattage (needed to tune lamp-failure detection)
-- Tender build (may need an industrial-grade controller) or self-build
 - Own CMS server (ThingsBoard) or the client's existing software

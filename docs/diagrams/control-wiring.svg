@@ -30,8 +30,8 @@ text{font-family:"JetBrains Mono",Consolas,monospace;font-size:12px;fill:#1d2321
     <rect class="box" x="330" y="224" width="140" height="32" rx="3"/><text x="400" y="244" text-anchor="middle" class="t-small">230V opto → GPIO36</text>
     <!-- rung4: SMPS -->
     <path class="w-thin" d="M60 300H330M470 300H840"/>
-    <rect class="box" x="330" y="284" width="140" height="32" rx="3"/><text x="400" y="304" text-anchor="middle" class="t-small">SMPS 230V→12V</text>
-    <path class="sig" d="M400 316V340H560"/><text x="566" y="344" class="t-small">12V → buck 5V/3A → LilyGO 5V</text>
+    <rect class="box" x="330" y="284" width="140" height="32" rx="3"/><text x="400" y="304" text-anchor="middle" class="t-small">SMPS 230V→5V 3A</text>
+    <path class="sig" d="M400 316V340H560"/><text x="566" y="344" class="t-small">5V → LilyGO 5V pin</text>
     <circle class="dot" cx="60" cy="80" r="3"/><circle class="dot" cx="60" cy="160" r="3"/><circle class="dot" cx="60" cy="240" r="3"/><circle class="dot" cx="60" cy="300" r="3"/>
     <circle class="dot" cx="840" cy="80" r="3"/><circle class="dot" cx="840" cy="240" r="3"/><circle class="dot" cx="840" cy="300" r="3"/>
   </svg>
