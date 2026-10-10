@@ -62,15 +62,15 @@ Rough figures as of October 2026. Get vendor quotes before bidding.
 
 | Item | Per panel ₹ | 160 panels ₹ |
 |---|---:|---:|
-| Panel material (10 kW tender build, ~10% bulk discount) | 23,000–29,500 | 36.8–47.2 lakh |
+| Panel material (10 kW tender build, ~10% bulk discount) | 24,700–31,500 | 39.5–50.4 lakh |
 | Assembly, wiring, testing per panel | 2,500–3,500 | 4.0–5.6 lakh |
 | Transport | 500–1,000 | 0.8–1.6 lakh |
 | Site installation and commissioning (plinth, 2 earth pits, terminations) | 8,000–12,000 | 12.8–19.2 lakh |
 | SIM data, 5 years (M2M plan) | 2,400–6,000 | 3.8–9.6 lakh |
 | CMS server 5 years + dashboard setup | — | 2.5–4.0 lakh |
-| Spares and warranty visits reserve (~10% of panel material) | 2,300–2,950 | 3.7–4.7 lakh |
+| Spares and warranty visits reserve (~10% of panel material) | 2,500–3,150 | 4.0–5.0 lakh |
 | Prototype and development (one-time) | — | 1.0–2.0 lakh |
-| **Total before profit and GST** | | **≈ ₹65–94 lakh** |
+| **Total before profit and GST** | | **≈ ₹68–97 lakh** |
 
 Add your margin and 18% GST on top. For 60 W or 90 W lamps add the extra cost from the rating table (₹4.8–9.6 lakh for 160 panels). Feeder cable is not included.
 

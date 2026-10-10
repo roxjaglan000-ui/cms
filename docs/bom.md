@@ -2,7 +2,7 @@
 
 This is a tender, so the default build is the **lowest-cost build that still meets the spec**. The earlier, costlier choices are kept as alternatives.
 
-Rates are rough estimates as of October 2026. They can vary 15–25% by brand, city and quantity. Get vendor quotes before bidding.
+Rates are rough estimates as of October 2026, checked against shop prices on 10 October 2026 ([buy-links.md](buy-links.md)). They can vary 15–25% by brand, city and quantity. Get vendor quotes before bidding.
 
 ## Tender build (lowest cost)
 
@@ -19,22 +19,22 @@ Rates are rough estimates as of October 2026. They can vary 15–25% by brand, c
 | 8 | Control MCB | SP 6 A C-curve | 2 | 300 |
 | 9 | Selector switch | 3-position AUTO-OFF-MAN, 22 mm | 1 | 200–250 |
 | 10 | Indicator lamps | 22 mm LED: R, Y, B, Light ON | 4 | 240–300 |
-| 11 | Controller + 4G | LilyGO T-A7670E (ESP32 + A7670 LTE Cat-1) with antenna | 1 | 2,300–2,800 |
-| 12 | Power supply | 230 V AC → 5 V 3 A SMPS (replaces 12 V SMPS + buck) | 1 | 350–500 |
+| 11 | Controller + 4G | LilyGO T-A7670E/G (ESP32 + A7670 LTE Cat-1) with antenna. Imported in bulk; ₹6,999 at Indian retail for one prototype | 1 | 3,500–4,500 |
+| 12 | Power supply | 230 V AC → 5 V 3 A SMPS, Mean Well RS-15-5 (replaces 12 V SMPS + buck) | 1 | 450–600 |
 | 13 | Backup cell | 18650 Li-ion (fits the board's holder) | 1 | 200–250 |
 | 14 | RTC module | DS3231 | 1 | 120–150 |
 | 15 | RS485 module | TTL ↔ RS485, auto direction | 1 | 100–150 |
 | 16 | Relay module | 1-channel 5 V opto-isolated | 1 | 80–120 |
-| 17 | AC sense module | 230 V opto-isolated, 8 channel (6 outgoing MCBs + contactor aux + spare) | 1 | 400–500 |
+| 17 | AC sense module | 230 V opto-isolated, 1 channel each (6 outgoing MCBs + contactor aux). No 8-channel 230 V module is sold in India | 7 | 1,000–1,100 |
 | 17a | I/O expander | PCF8574 I2C module (reads the 6 MCB inputs) | 1 | 80–120 |
 | 18 | Door limit switch | | 1 | 100–150 |
 | 19 | Antenna extension | SMA cable + panel-mount antenna | 1 | 250–300 |
 | 20 | Terminal blocks | 63 A for 16/25 sq mm × 4 (spec), control terminals | 1 set | 900–1,100 |
 | 21 | Wiring material | Cu wire, lugs, ferrules, DIN rail, duct, glands | 1 set | 1,500–2,000 |
 | 22 | Earthing | Earth bar, stud, washers | 1 set | 250–300 |
-| | **Panel total** (excluding poles, lights, cable, labour) | | | **≈ 25,500–32,500** |
+| | **Panel total** (excluding poles, lights, cable, labour) | | | **≈ 27,500–35,000** |
 
-The first design came to about ₹40,000–60,000, so this saves roughly ₹14,500–27,500 per panel. This BOM is for a 10 kW panel (250 poles × 40 W); for bigger lamps see the rating table in [scale-and-bid.md](scale-and-bid.md).
+The first design came to about ₹40,000–60,000, so this saves roughly ₹12,500–25,000 per panel. This BOM is for a 10 kW panel (250 poles × 40 W); for bigger lamps see the rating table in [scale-and-bid.md](scale-and-bid.md).
 
 ## Where the saving comes from
 
@@ -54,7 +54,7 @@ There is a **5-year comprehensive warranty**, so every failure in 5 years costs 
 
 ## At higher quantity (50+ panels)
 
-Replace items 11–17 with one custom PCB: an ESP32-WROOM module, an A7670C module, RS485, opto inputs, relay, RTC and power supply on one board. That costs roughly ₹2,000–2,800 per board at 50+ pieces, against ₹3,400–4,300 for the modules. It also cuts wiring time and loose connections. PCB design and prototypes are a one-time cost.
+Replace items 11–17 with one custom PCB: an ESP32-WROOM module, an A7670C module, RS485, opto inputs, relay, RTC and power supply on one board. That costs roughly ₹2,000–2,800 per board at 50+ pieces, against ₹5,500–7,000 for the modules. It also cuts wiring time and loose connections. PCB design and prototypes are a one-time cost.
 
 ## Running cost (include this in the bid)
 

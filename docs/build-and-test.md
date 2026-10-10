@@ -4,7 +4,7 @@ The firmware has not been compiled or run on hardware yet. Follow these steps in
 
 ## 1. Buy parts for 2 prototype panels
 
-LilyGO T-A7670E, Selec MFM383A-C + 3 CTs, RS485 module, DS3231, relay module, 4-channel 230 V opto module, 5 V 3 A SMPS, 18650 cell, and one M2M/IoT SIM per board. Roughly ₹10,000 per set for the electronics.
+LilyGO T-A7670E, Selec MFM383A-C + 3 CTs, RS485 module, DS3231, relay module, 230 V opto input modules, 5 V 3 A SMPS, 18650 cell, and one M2M/IoT SIM per board. Roughly ₹13,000–14,000 per set for the electronics at Indian retail prices. Links are in [buy-links.md](buy-links.md).
 
 ## 2. Set up the CMS (ThingsBoard)
 
