@@ -8,8 +8,9 @@
 
 | Path | What it has |
 |---|---|
+| [docs/report/CMS-Project-Report.pdf](docs/report/CMS-Project-Report.pdf) | Full project report (PDF + Word): design, wiring, parts, build and test checklists |
 | [docs/tender-spec.md](docs/tender-spec.md) | Tender requirements (with the original screenshot) and where each is covered |
-| [docs/design.md](docs/design.md) | Load calculation, power wiring, control wiring, pin map |
+| [docs/design.md](docs/design.md) | Load calculation, power wiring, control wiring, controller wiring, pin map |
 | [docs/logic.md](docs/logic.md) | Operating modes, flowchart, fault detection rules |
 | [docs/bom.md](docs/bom.md) | Lowest-cost tender components list with INR prices, savings and running cost |
 | [docs/cms-dashboard.md](docs/cms-dashboard.md) | ThingsBoard server setup, telemetry keys, remote commands |

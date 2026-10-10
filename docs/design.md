@@ -48,6 +48,10 @@ The 3-position selector switch:
 
 The contactor aux NO contact feeds a 230 V opto input so the controller knows the contactor really closed.
 
+## Controller wiring
+
+![Controller wiring](diagrams/controller-wiring.svg)
+
 ## Controller pin map (LilyGO T-A7670 / T-SIM7600)
 
 | ESP32 pin | Connected to | Note |
