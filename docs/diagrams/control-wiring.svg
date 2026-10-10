@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="360" viewBox="0 0 900 360" role="img" aria-label="Control ladder diagram"><style>
+rect.bg{fill:#f8f9f6}
+text{font-family:"JetBrains Mono",Consolas,monospace;font-size:12px;fill:#1d2321}
+.t-small{font-size:10.5px;fill:#5b6461}
+.t-head{font-family:"Arial Narrow",Arial,sans-serif;font-size:15px;font-weight:600;fill:#1d2321}
+.box{fill:#eceeea;stroke:#1d2321;stroke-width:1.4}
+.box-acc{fill:#eceeea;stroke:#2f5d50;stroke-width:2}
+.w{fill:none;stroke:#1d2321;stroke-width:2}
+.w-thin{fill:none;stroke:#1d2321;stroke-width:1.4}
+.sig{fill:none;stroke:#2f5d50;stroke-width:1.6;stroke-dasharray:5 4}
+.r{stroke:#c62828}.y{stroke:#b88a00}.b{stroke:#1f5fbf}.n{stroke:#1d2321}.pe{stroke:#2e7d32}
+.dot{fill:#1d2321}
+</style><rect class="bg" width="900" height="360"/>
+    <path class="w r" d="M60 40V320"/><path class="w n" d="M840 40V320"/>
+    <text x="60" y="28" text-anchor="middle" class="t-small">L (R via 6A MCB)</text><text x="840" y="28" text-anchor="middle" class="t-small">N</text>
+    <!-- rung1: MAN -->
+    <path class="w-thin" d="M60 80H200M230 80H662M698 80H840"/>
+    <path class="w" d="M200 66V94M230 66V94"/><text x="215" y="58" text-anchor="middle" class="t-small">S1 MAN</text>
+    <circle cx="680" cy="80" r="18" fill="none" stroke="#2f5d50" stroke-width="2"/><text x="680" y="84" text-anchor="middle" class="t-small">K1</text>
+    <text x="680" y="116" text-anchor="middle" class="t-small">contactor coil A1–A2</text>
+    <circle class="dot" cx="520" cy="80" r="3.5"/>
+    <!-- rung2: AUTO -->
+    <path class="w-thin" d="M60 160H200M230 160H360M390 160H520V80"/>
+    <path class="w" d="M200 146V174M230 146V174"/><text x="215" y="138" text-anchor="middle" class="t-small">S1 AUTO</text>
+    <path class="w" d="M360 146V174M390 146V174"/><text x="375" y="138" text-anchor="middle" class="t-small">RL1 NO</text>
+    <text x="375" y="194" text-anchor="middle" class="t-small">relay ← GPIO23</text>
+    <!-- rung3: aux feedback -->
+    <path class="w-thin" d="M60 240H200M230 240H330M470 240H840"/>
+    <path class="w" d="M200 226V254M230 226V254"/><text x="215" y="218" text-anchor="middle" class="t-small">K1 aux NO</text>
+    <rect class="box" x="330" y="224" width="140" height="32" rx="3"/><text x="400" y="244" text-anchor="middle" class="t-small">230V opto → GPIO36</text>
+    <!-- rung4: SMPS -->
+    <path class="w-thin" d="M60 300H330M470 300H840"/>
+    <rect class="box" x="330" y="284" width="140" height="32" rx="3"/><text x="400" y="304" text-anchor="middle" class="t-small">SMPS 230V→5V 3A</text>
+    <path class="sig" d="M400 316V340H560"/><text x="566" y="344" class="t-small">5V → LilyGO 5V pin</text>
+    <circle class="dot" cx="60" cy="80" r="3"/><circle class="dot" cx="60" cy="160" r="3"/><circle class="dot" cx="60" cy="240" r="3"/><circle class="dot" cx="60" cy="300" r="3"/>
+    <circle class="dot" cx="840" cy="80" r="3"/><circle class="dot" cx="840" cy="240" r="3"/><circle class="dot" cx="840" cy="300" r="3"/>
+  </svg>

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="440" viewBox="0 0 1000 440" role="img" aria-label="Controller low-voltage wiring"><style>
+rect.bg{fill:#f8f9f6}
+text{font-family:"JetBrains Mono",Consolas,monospace;font-size:12px;fill:#1d2321}
+.t-small{font-size:10.5px;fill:#5b6461}
+.t-head{font-family:"Arial Narrow",Arial,sans-serif;font-size:15px;font-weight:600;fill:#1d2321}
+.box{fill:#eceeea;stroke:#1d2321;stroke-width:1.4}
+.box-acc{fill:#eceeea;stroke:#2f5d50;stroke-width:2}
+.w{fill:none;stroke:#1d2321;stroke-width:2}
+.w-thin{fill:none;stroke:#1d2321;stroke-width:1.4}
+.sig{fill:none;stroke:#2f5d50;stroke-width:1.6;stroke-dasharray:5 4}
+.r{stroke:#c62828}.y{stroke:#b88a00}.b{stroke:#1f5fbf}.n{stroke:#1d2321}.pe{stroke:#2e7d32}
+.dot{fill:#1d2321}
+</style><rect class="bg" width="1000" height="440"/>
+<rect class="box-acc" x="390" y="110" width="220" height="260" rx="6"/>
+<text x="500" y="98" text-anchor="middle" class="t-head">LilyGO T-A7670E (ESP32 + 4G)</text>
+<text x="500" y="196" text-anchor="middle" class="t-small">SIM + 4G antenna</text><text x="500" y="212" text-anchor="middle" class="t-small">(antenna panel ke bahar)</text>
+<text x="398" y="144" class="t-small">GPIO18 RX</text><text x="398" y="164" class="t-small">GPIO19 TX</text>
+<text x="398" y="224" class="t-small">GPIO21 SDA</text><text x="398" y="244" class="t-small">GPIO22 SCL</text>
+<text x="602" y="154" text-anchor="end" class="t-small">GPIO23</text>
+<text x="602" y="224" text-anchor="end" class="t-small">GPIO35</text>
+<text x="602" y="284" text-anchor="end" class="t-small">GPIO15</text>
+<text x="602" y="344" text-anchor="end" class="t-small">5V / GND</text>
+<text x="500" y="362" text-anchor="middle" class="t-small">GPIO36</text>
+<!-- meter + rs485 -->
+<rect class="box" x="10" y="115" width="90" height="70" rx="4"/><text x="55" y="142" text-anchor="middle" class="t-head">Meter</text><text x="55" y="162" text-anchor="middle" class="t-small">RS485 A / B</text>
+<rect class="box" x="170" y="115" width="130" height="70" rx="4"/><text x="235" y="142" text-anchor="middle" class="t-head">TTL-RS485</text><text x="235" y="162" text-anchor="middle" class="t-small">auto direction</text>
+<path class="w-thin" d="M100 140H170M100 160H170"/><text x="104" y="132" class="t-small">A</text><text x="104" y="176" class="t-small">B</text>
+<path class="sig" d="M300 140H390M300 160H390"/><text x="306" y="132" class="t-small">TXD→RX</text><text x="306" y="178" class="t-small">RXD←TX</text>
+<!-- I2C bus -->
+<rect class="box" x="170" y="205" width="130" height="50" rx="4"/><text x="235" y="228" text-anchor="middle" class="t-head">DS3231</text><text x="235" y="246" text-anchor="middle" class="t-small">RTC, I2C 0x68</text>
+<rect class="box" x="170" y="280" width="130" height="60" rx="4"/><text x="235" y="304" text-anchor="middle" class="t-head">PCF8574</text><text x="235" y="324" text-anchor="middle" class="t-small">I/O, I2C 0x20</text>
+<path class="sig" d="M300 220H390M300 240H390M340 220V295H300M355 240V315H300"/>
+<text x="318" y="270" class="t-small">I2C</text>
+<!-- opto -->
+<rect class="box" x="10" y="270" width="110" height="90" rx="4"/><text x="65" y="296" text-anchor="middle" class="t-head">Opto 8ch</text><text x="65" y="314" text-anchor="middle" class="t-small">230V AC in</text><text x="65" y="330" text-anchor="middle" class="t-small">ch1–6: MCB out</text><text x="65" y="346" text-anchor="middle" class="t-small">ch7: K1 aux</text>
+<path class="sig" d="M120 300H170M120 320H170"/><text x="126" y="292" class="t-small">P0–P5</text>
+<path class="sig" d="M65 360V410H500V370"/><text x="140" y="404" class="t-small">ch7 → GPIO36 (10k pull-up)</text>
+<!-- right side -->
+<rect class="box" x="740" y="120" width="150" height="60" rx="4"/><text x="815" y="146" text-anchor="middle" class="t-head">Relay module</text><text x="815" y="166" text-anchor="middle" class="t-small">RL1 NO → K1 coil</text>
+<path class="sig" d="M610 150H740"/>
+<rect class="box" x="740" y="200" width="150" height="44" rx="4"/><text x="815" y="226" text-anchor="middle" class="t-small">Door limit switch</text>
+<path class="sig" d="M610 220H740"/><text x="620" y="212" class="t-small">10k pull-up</text>
+<rect class="box" x="740" y="260" width="150" height="44" rx="4"/><text x="815" y="286" text-anchor="middle" class="t-small">Selector AUTO contact</text>
+<path class="sig" d="M610 280H740"/>
+<rect class="box" x="740" y="320" width="150" height="44" rx="4"/><text x="815" y="346" text-anchor="middle" class="t-small">SMPS 230V → 5V 3A</text>
+<path class="w-thin" d="M610 340H740"/>
+<text x="900" y="154" class="t-small">dwg 03</text>
+<text x="10" y="40" class="t-small">Signal (dashed) = 3.3V logic. Solid = power / RS485 pair.</text>
+<text x="10" y="58" class="t-small">Inputs LOW = active (opto conducting / switch closed to GND).</text>
+</svg>
